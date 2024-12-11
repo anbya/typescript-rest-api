@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import mainRoutes from './routes/main.routes';
+import routes from './routes/index';
 
 dotenv.config(); // Load environment variables
 
@@ -20,12 +20,7 @@ app.use(bodyParser.json({ limit: '200mb' })); // Parse JSON bodies
 app.use(bodyParser.urlencoded({ limit: '200mb', extended:true })); // Parse URL-encoded bodies
 app.use(cookieParser()); // Parse cookies
 
-// Routes
-app.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to TypeScript REST API!');
-});
-
-app.use('/main', mainRoutes);
+app.use('/', routes);
 
 // Start Server
 app.listen(PORT, () => {
