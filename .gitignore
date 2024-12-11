@@ -1,0 +1,10 @@
+node_modules/
+.vscode/
+.env
+.scannerwork/
+log/
+storage/images/*
+storage/reports/*
+public/storage/*
+!public/storage/truck-ph-back.png
+!public/storage/truck-ph.png
