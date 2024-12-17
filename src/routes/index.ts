@@ -2,6 +2,7 @@ import { Router } from 'express';
 import authRoutes from './auth.routes';
 import mainRoutes from './main.routes';
 import usersRoutes from './users.routes';
+import staffsRoutes from './staffs.routes';
 
 import { authenticateWebToken, authenticateAppToken } from '../middleware/token';
 
@@ -14,5 +15,6 @@ router.get('/', (req, res) => {
 router.use('/auth', authRoutes);
 router.use('/main', mainRoutes);
 router.use('/users', authenticateAppToken, usersRoutes);
+router.use('/staffs', authenticateAppToken, staffsRoutes);
 
 export default router;
