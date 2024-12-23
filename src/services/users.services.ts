@@ -8,11 +8,7 @@ export const getServices = async () => {
             message: 'Success'
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };
 
@@ -28,11 +24,7 @@ export const addServices = async (name:string, email:string) => {
             message: 'Success'
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };
 
@@ -48,11 +40,7 @@ export const updateServices = async (id:string, name:string, email:string) => {
             message: 'Success'
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };
 
@@ -68,10 +56,6 @@ export const deleteServices = async (id:string) => {
             message: 'Success'
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };

@@ -12,11 +12,7 @@ export const getServices = async () => {
             message: 'Success'
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };
 
@@ -28,11 +24,7 @@ export const getByPKServices = async (id:number) => {
             message: 'Success'
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };
 
@@ -62,11 +54,7 @@ export const addServices = async (
             }
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };
 
@@ -90,11 +78,7 @@ export const updateServices = async (
             message: 'Success'
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };
 
@@ -113,10 +97,6 @@ export const deleteServices = async (
             message: 'Success'
         }
     } catch (err) {
-        if (err instanceof Error) {
-            return { result: [], message: 'Database error', error: err.message }
-        } else {
-            return { result: [], message: 'Unknown error', error: String(err) }
-        }
+        throw(err)
     }
 };
