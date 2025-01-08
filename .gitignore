@@ -3,7 +3,7 @@ node_modules/
 .env
 .scannerwork/
 log/
-logs/
+logs/*
 storage/images/*
 storage/reports/*
 public/storage/*
