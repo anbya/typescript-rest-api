@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import {
     GetUserActivities,
 } from '../controlers/usersActivity.contolers';

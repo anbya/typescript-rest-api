@@ -1,9 +1,20 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application, Request, Response, NextFunction  } from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import routes from './routes/index';
+
+const apiLogger = require('./utils/logger');
+const { handleError, convertToApiError } = require('./middleware/errorHandler')
+
+class ErrorHandler extends Error {
+  statusCode: number;
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
 
 dotenv.config(); // Load environment variables
 
@@ -21,6 +32,11 @@ app.use(bodyParser.urlencoded({ limit: '200mb', extended:true })); // Parse URL-
 app.use(cookieParser()); // Parse cookies
 
 app.use('/', routes);
+
+app.use(convertToApiError);
+app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
+  handleError(err, res)
+})
 
 // Start Server
 app.listen(PORT, () => {

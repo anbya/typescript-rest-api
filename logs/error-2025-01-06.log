@@ -1,0 +1,4 @@
+| 2025-01-06 13:54:15 | SERVER | error: error: relation "public.user_time_activityxxx" does not exist
+    at C:\Users\enigm\Documents\ace digital\dwv-typescript\typescript-rest-api\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+| 2025-01-06 13:54:15 | SERVER | error: code (42P01): undefined_table
