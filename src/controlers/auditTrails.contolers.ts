@@ -6,6 +6,8 @@ import {
 import {
     getTransactionLogsService,
     addTransactionLogsService,
+    updateTransactionLogsService,
+    getActionLogsService,
 } from '../services/auditTrails.services';
 
 interface dataToPass {
@@ -34,6 +36,32 @@ export const addTransactionLogs = async (req: Request, res: Response, next: Next
         const queryData = customAppReq.body as dataToPass
         const result  = await addTransactionLogsService(queryData)
         res.send(result)
+    } catch(error){
+        next(error);
+    }
+};
+
+export const updateTransactionLogs = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const customAppReq = req as CustomAppRequest
+        const queryData = customAppReq.body as dataToPass
+        const paramData = customAppReq.params as dataToPass
+        const result  = await updateTransactionLogsService(queryData,paramData.id)
+        res.send(result)
+    } catch(error){
+        next(error);
+    }
+};
+
+export const getActionLogs = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const customAppReq = req as CustomAppRequest
+        const queryData = customAppReq.body as dataToPass
+        const result  = await getActionLogsService(queryData)
+        res.send({
+            data:result,
+            total:result.length
+        })
     } catch(error){
         next(error);
     }

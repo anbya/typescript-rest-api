@@ -146,3 +146,112 @@ export const addTransactionLogsService = async (queryData: dataToPass) => {
         throw(err)
     }
 };
+
+export const updateTransactionLogsService = async (queryData: dataToPass,id:number) => {
+    try {
+        const result = await db.TransactionLogs.update(
+            queryData,
+            {
+                where: {id : id}
+            }
+        )
+        .then( data => {
+            return data
+        })
+        .catch( err => {
+            throw(err)
+        })
+        return result
+    } catch (err) {
+        throw(err)
+    }
+};
+
+export const getActionLogsService = async (queryData: dataToPass) => {
+    try {
+        let conditions:objectProcess = {}
+        let filterParam:objectProcess = {}
+        const searchKey = queryData.searchKey;
+        if(searchKey){
+            filterParam = {
+                ...filterParam,
+                [Op.or]: [
+                    {
+                        action: {[Op.like] : `%${searchKey}%`}
+                    },
+                    {
+                        username: {[Op.like] : `%${searchKey}%`}
+                    },
+                    {
+                        module: {[Op.like] : `%${searchKey}%`}
+                    },
+                    {
+                        sub_module: {[Op.like] : `%${searchKey}%`}
+                    },
+                    {
+                        description: {[Op.like] : `%${searchKey}%`}
+                    }
+                ]
+            }
+        }
+        const startDate = queryData.daterange.startDate;
+        const endDate = queryData.daterange.endDate;
+        if(startDate&&endDate){
+            filterParam = {
+                ...filterParam,
+                timestamp : {[Op.between] : [moment(startDate),moment(endDate)]}
+            }
+        }
+        conditions = {
+            ...conditions,
+            where:filterParam
+        }
+    
+        const limit = queryData.perPage;
+        const offset = queryData.page;
+        const totalDataCondition = conditions
+        if(limit){
+            conditions = {
+                ...conditions,
+                limit:limit
+            }
+            if(offset){
+                conditions = {
+                    ...conditions,
+                    offset:limit*(offset-1)
+                }
+            }
+        }
+        const orderby = queryData.orderby;
+        const orderdirection = queryData.orderdirection;
+        if(orderby){
+            if(orderdirection){
+                conditions = {
+                    ...conditions,
+                    order:[[orderby,orderdirection]]
+                }
+            }
+        } else {
+            conditions = {
+                ...conditions,
+                order:[['id','ASC']]
+            }
+        }
+
+        const result:objectProcess = await db.ActionLogs.findAll(conditions)
+        .then( async data => {
+            let totalData = await db.ActionLogs.findAll(totalDataCondition)
+            return {
+                data:data,
+                total:totalData.length
+            }
+        })
+        .catch( err => {
+            throw(err)
+        })
+        
+        return result
+    } catch (err) {
+        throw(err)
+    }
+};
