@@ -4,6 +4,7 @@ import mainRoutes from './main.routes';
 import usersRoutes from './users.routes';
 import staffsRoutes from './staffs.routes';
 import usersActivityRoutes from './usersActivity.routes';
+import auditTrailsRoutes from './auditTrails.routes';
 
 import { authenticateWebToken, authenticateAppToken } from '../middleware/token';
 
@@ -18,5 +19,6 @@ router.use('/main', mainRoutes);
 router.use('/users', authenticateAppToken, usersRoutes);
 router.use('/staffs', authenticateAppToken, staffsRoutes);
 router.use('/user-activity', authenticateAppToken, usersActivityRoutes);
+router.use('/audit-trails', authenticateAppToken, auditTrailsRoutes);
 
 export default router;
