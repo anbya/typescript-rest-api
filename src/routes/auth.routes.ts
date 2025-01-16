@@ -1,5 +1,9 @@
 import { Router, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import {
+    webLoginControlers,
+    appLoginControlers
+} from '../controlers/auth.contolers';
 
 const router: Router = Router();
 
@@ -50,5 +54,9 @@ router.get('/app-token', (req: Request, res: Response) => {
     };
     res.json([{ status:"Token create successfully", data:response }]);
 });
+
+router.post('/web-login', webLoginControlers);
+
+router.post('/app-login', appLoginControlers);
 
 export default router;

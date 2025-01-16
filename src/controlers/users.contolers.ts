@@ -10,11 +10,32 @@ import {
     deleteServices
 } from '../services/users.services';
 
+interface dataToPass {
+    [key: string]: any;
+}
+
 export const getControlers = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const customAppReq = req as CustomAppRequest
-        const result  = await getServices()
-        res.json(result.result);
+        const queryData = customAppReq.query as dataToPass
+        const result  = await getServices(queryData)
+
+        for (const data of result.data) {
+            delete data.password
+        }
+
+        res.status(200).send({
+            success: true,
+            status: 'success',
+            statusCode: 200,
+            message: 'request completed',
+            data: result.data,
+            page: result.page,
+            perPage: result.perPage,
+            total: result.total,
+            orderData: result.orderData,
+            orderDirection: result.orderDirection,
+        })
     } catch(error){
         next(error);
     }
@@ -23,8 +44,8 @@ export const getControlers = async (req: Request, res: Response, next: NextFunct
 export const addControlers = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const customAppReq = req as CustomAppRequest
-        const { name, email } = customAppReq.body;
-        const result  = await addServices( name, email )
+        const { name, email, password } = customAppReq.body;
+        const result  = await addServices( name, email, password )
         res.json(result.result);
     } catch(error){
         next(error);
