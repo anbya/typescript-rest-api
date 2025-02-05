@@ -14,6 +14,11 @@ import {
     generateAppToken,
 } from '../utils/token';
 
+interface User {
+    userId: string;
+    [key: string]: any;
+}
+
 interface dataToPass {
     [key: string]: any;
 }
@@ -27,6 +32,8 @@ export const webLoginControlers = async (req: Request, res: Response, next: Next
         }
         const userResult  = await getServices(queryData)
         if(userResult.data.length>0){
+            let userData = {...userResult.data[0]}
+            delete userData.password
             const decryptedPassword = decryptData(bodyData.password)
             const hashedPassword = userResult.data[0].password
             const validateResult = await validatePassword(`${decryptedPassword}`,`${hashedPassword}`)
@@ -34,7 +41,7 @@ export const webLoginControlers = async (req: Request, res: Response, next: Next
             
                 let payload:{ [key: string]: any;} = {
                     user: {
-                        userId: userResult.data[0].name,
+                        userId: userResult.data[0].id,
                         userName: userResult.data[0].name,
                         firstName: '',
                         lastName: '',
@@ -59,7 +66,8 @@ export const webLoginControlers = async (req: Request, res: Response, next: Next
                     success: true,
                     status: 'success',
                     statusCode: 200,
-                    message: 'Login success'
+                    message: 'Login success',
+                    user:userData
                 })
             } else {
                 res.status(200).send({
@@ -80,6 +88,50 @@ export const webLoginControlers = async (req: Request, res: Response, next: Next
     } catch(error){
         next(error);
     }
+};
+
+export const generateNewWebToken = async (req: Request, res: Response, next: NextFunction) => {
+    const customWebReq = req as CustomAppRequest
+    const refreshToken = customWebReq.cookies?.refreshToken;
+
+    if (!refreshToken) {
+        res.status(401).json({
+            message:"Cannot find token"
+        });
+        return;
+    } else {
+        const jwtDecode = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as User
+        console.log(`check jwtDecode`, jwtDecode);
+            
+        let payload:{ [key: string]: any;} = {
+            user: jwtDecode.user,
+        };
+        const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {
+            expiresIn: "30m",
+        });
+        const newRefreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string)
+    
+        res.setHeader("content-type", "application/json");
+        res.cookie("accessToken", accessToken, {
+            maxAge: 30 * 60 * 1000,
+            httpOnly: true
+        });
+        res.cookie("refreshToken", newRefreshToken, {
+            maxAge: 5 * 24 * 60 * 60 * 1000,
+            httpOnly: true
+        });
+        res.json({ success: true });
+    }
+    // try{
+    //     res.status(200).send({
+    //         success: false,
+    //         status: 'failed',
+    //         statusCode: 200,
+    //         message: 'Login failed.'
+    //     })
+    // } catch(error){
+    //     next(error);
+    // }
 };
 
 export const appLoginControlers = async (req: Request, res: Response, next: NextFunction) => {

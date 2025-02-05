@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 
 router.use('/auth', authRoutes);
 router.use('/main', mainRoutes);
-router.use('/users', authenticateAppToken, usersRoutes);
+router.use('/users', authenticateWebToken, usersRoutes);
 router.use('/staffs', authenticateAppToken, staffsRoutes);
 router.use('/user-activity', authenticateAppToken, usersActivityRoutes);
 router.use('/audit-trails', authenticateAppToken, auditTrailsRoutes);

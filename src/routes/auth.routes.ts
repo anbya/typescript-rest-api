@@ -2,7 +2,8 @@ import { Router, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import {
     webLoginControlers,
-    appLoginControlers
+    generateNewWebToken,
+    appLoginControlers,
 } from '../controlers/auth.contolers';
 
 const router: Router = Router();
@@ -56,6 +57,8 @@ router.get('/app-token', (req: Request, res: Response) => {
 });
 
 router.post('/web-login', webLoginControlers);
+
+router.get('/refresh-token', generateNewWebToken);
 
 router.post('/app-login', appLoginControlers);
 
