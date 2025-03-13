@@ -1,20 +1,11 @@
 import express, { Application, Request, Response, NextFunction  } from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import routes from './routes/index';
+import routes from './routes';
 
-const apiLogger = require('./utils/logger');
-const { handleError, convertToApiError } = require('./middleware/errorHandler')
-
-class ErrorHandler extends Error {
-  statusCode: number;
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.statusCode = statusCode;
-  }
-}
+import { apiLogger } from './utils/logger';
+import { handleError, convertToApiError, ApiError } from './middleware/errorHandler';
 
 dotenv.config(); // Load environment variables
 
@@ -27,18 +18,22 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";// bypass openssl
 
 // Middleware
 app.use(cors({ origin: CORS_ORIGIN, credentials: true })); // Enable CORS
-app.use(bodyParser.json({ limit: '200mb' })); // Parse JSON bodies
-app.use(bodyParser.urlencoded({ limit: '200mb', extended:true })); // Parse URL-encoded bodies
+
+// BODY PARSE
+app.use(express.json());
+app.use(express.urlencoded({ limit: '200mb', extended: true }));
+
 app.use(cookieParser()); // Parse cookies
 
 app.use('/', routes);
 
 app.use(convertToApiError);
-app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
-  handleError(err, res)
+app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
+  handleError(err, req, res, next)
 })
 
 // Start Server
 app.listen(PORT, () => {
+  apiLogger('info', `Server running at ${PORT}`);
   console.log(`Server running at http://localhost:${PORT}`);
 });
